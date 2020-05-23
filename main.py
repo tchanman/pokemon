@@ -1,7 +1,7 @@
 import pygame
 from entity import Entity
 from player import Player
-import background
+from level import Level
 
 # Initialize game settings
 pygame.init()
@@ -20,29 +20,48 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 clock = pygame.time.Clock()
 FPS = 60
 
+# player
 pl = Player([SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2])
 keydict = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
 
 player_group = pygame.sprite.Group()
 player_group.add(pl)
 
-wall = Entity([0,0], [720, 100], False)
-wall_group = pygame.sprite.Group()
-wall_group.add(wall)
+# level selection
+level_list = {
+    "hometown": Level(pygame.image.load("./assets/bgs/hometown.png"), [
+        Entity([430,75], False),
+        Entity([220, 645], False),
+        #Entity([0, 720], [1080 ,320], False)
+    ]),
+    # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
+    #     Entity([0,0], [100, 75], False)
+    # ])
+}
 
-bg = pygame.image.load("./assets/bgs/hometown.png")
+level = 1
+bg = level_list["hometown"]
 
 def tick():
+    global bg
+    if level == 1:
+        bg = level_list["hometown"]
+    elif level == 2:
+        bg = level_list["level1"]
+    
     pl.tick(SCREEN_SIZE, keydict)
-    # bg.tick(SCREEN_SIZE)
 
 def render():
-    screen.blit(bg, (0,0))
 
+    bg.render(screen)
     pl.render(screen)
-    # bg.render(screen)
     
     pygame.display.update()
+
+def isPtInBox(ptx,pty,x1,y1,x2,y2):
+    if ptx >= x1 and ptx <= x2 and pty >= y1 and pty <= y2:
+        return True
+    return False
 
 gameRunning = True
 
@@ -56,10 +75,12 @@ while gameRunning:
                 gameRunning = False
         if event.type == pygame.QUIT:
             gameRunning = False
-    
-    hit = pygame.sprite.spritecollide(pl, wall_group, True)
+
+    hit = pygame.sprite.spritecollide(pl, bg.wall_group, False)
     if hit:
-        print("collision!")
+        pl.vel = 0
+    else:
+        pl.vel = 2
 
     # update game state
     tick()

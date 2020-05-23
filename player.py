@@ -8,15 +8,16 @@ class Player(Entity):
         self.char_w = 34
         self.char_h = 45
         
-        super().__init__(pos, [self.char_w, self.char_h], False)
+        super().__init__([self.char_w, self.char_h], False)
         
         self.vel = 2
+        self.hitbox_offput = [self.char_w / 2 - 2, self.char_h / 2]
+        self.hitbox.center = [self.pos[0] + self.hitbox_offput[0], self.pos[1] + self.hitbox_offput[1]]
 
-        self.moving_left = False
-        self.moving_right = False
-        self.moving_for = False
-        self.moving_back = False
-        
+        # moving_direction = [for, back, left, right]
+        self.moving_direction = {"f":False,"b":False,"l":False,"r":False}
+        self.canmove = {"f":True,"b":True,"l":True,"r":True}
+
         self.walkcount_x = 0
         self.walkcount_y = 0
         
@@ -37,35 +38,24 @@ class Player(Entity):
     def tick(self, screen_size, keydict):
         keys = pygame.key.get_pressed()
 
-        if keys[keydict[0]] and self.pos[0] > 0:
+        #left
+        if keys[keydict[0]] and self.canmove["l"] and self.pos[0] > 0:
             self.pos[0] -= self.vel
-            self.moving_for = False
-            self.moving_back = False
-            self.moving_left = True
-            self.moving_right = False
-        elif keys[keydict[1]] and self.pos[0] < screen_size[0] - self.char_w:
+            self.moving_direction["l"] = True
+        #right
+        elif keys[keydict[1]] and self.canmove["r"] and self.pos[0] < screen_size[0] - self.char_w:
             self.pos[0] += self.vel
-            self.moving_for = False
-            self.moving_back = False
-            self.moving_left = False
-            self.moving_right = True
-        elif keys[keydict[2]] and self.pos[1] > 0:
+            self.moving_direction["r"] = True
+        #back
+        elif keys[keydict[2]] and self.canmove["b"] and self.pos[1] > 0:
             self.pos[1] -= self.vel
-            self.moving_for = False
-            self.moving_back = True
-            self.moving_left = False
-            self.moving_right = False
-        elif keys[keydict[3]] and self.pos[1] < screen_size[1] - self.char_h:
+            self.moving_direction["b"] = True
+        #for
+        elif keys[keydict[3]] and self.canmove["f"] and self.pos[1] < screen_size[1] - self.char_h:
             self.pos[1] += self.vel
-            self.moving_for = True
-            self.moving_back = False
-            self.moving_left = False
-            self.moving_right = False
+            self.moving_direction["f"] = True
         else:
-            self.moving_for = False
-            self.moving_back = False
-            self.moving_left = False
-            self.moving_right = False
+            self.moving_direction = self.moving_direction.fromkeys(self.moving_direction, 0)
             self.walkcount_x = 0
             self.walkcount_y = 0
 
@@ -75,20 +65,20 @@ class Player(Entity):
         if self.walkcount_y + 1 >= self.WALK_INTERVAL:
             self.walkcount_y = 0
 
-        if self.moving_left:
+        if self.moving_direction["l"]:
             screen.blit(self.walk_left[int(self.walkcount_x // self.WALK_PER_FRAME)], (self.pos[0], self.pos[1]))
             self.walkcount_x += 1
-        elif self.moving_right:
+        elif self.moving_direction["r"]:
             screen.blit(self.walk_right[int(self.walkcount_x // self.WALK_PER_FRAME)], (self.pos[0], self.pos[1]))
             self.walkcount_x += 1 
-        elif self.moving_for:
+        elif self.moving_direction["f"]:
             screen.blit(self.walk_for[int(self.walkcount_y // self.WALK_PER_FRAME)], (self.pos[0], self.pos[1]))
             self.walkcount_y += 1
-        elif self.moving_back:
+        elif self.moving_direction["b"]:
             screen.blit(self.walk_back[int(self.walkcount_y // self.WALK_PER_FRAME)], (self.pos[0], self.pos[1]))
             self.walkcount_y += 1
         else:
             screen.blit(self.stand_for, (self.pos[0], self.pos[1]))
         
-        self.hitbox.center = self.pos
+        self.hitbox.center = [self.pos[0] + self.hitbox_offput[0], self.pos[1] + self.hitbox_offput[1]]
         pygame.draw.rect(screen, (255,0,0), self.hitbox, 2)
