@@ -104,40 +104,46 @@ class Player(Entity):
         for wall in wallgroup:
             w1 = wall.rect.topleft
             w2 = wall.rect.bottomright
-            if self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomleft,w1,w2):
+            tl = self.in_box(self.rect.topleft, w1, w2)
+            tr = self.in_box(self.rect.topright, w1, w2)
+            bl = self.in_box(self.rect.bottomleft, w1, w2)
+            br = self.in_box(self.rect.bottomright, w1, w2)
+            
+            if tl and tr and bl and not br:
                 self.canmove['b'] = False
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomright,w1,w2):
+            elif tl and tr and br and not bl:
                 self.canmove['b'] = False
                 self.canmove['r'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topleft,w1,w2):
+            elif bl and br and tl and not tr:
                 self.canmove['f'] = False
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topright,w1,w2):
+            elif bl and br and tr and not tl:
                 self.canmove['f'] = False
                 self.canmove['r'] = False
             
-            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2):
+            if tl and tr and not bl and not br:
                 self.canmove['b'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2):
+            elif bl and br and not tl and not tr:
                 self.canmove['f'] = False
-            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.bottomleft,w1,w2):
+            elif tl and bl and not tr and not br:
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.topright, w1, w2) and self.in_box(self.rect.bottomright,w1,w2):
+            elif tr and br and not tl and not bl:
                 self.canmove['r'] = False
             
-            elif self.in_box(self.rect.topleft, w1, w2):
+            elif tl and not tr and not bl and not br:
                 self.canmove['b'] = False
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2):
+            elif bl and not tl and not tr and not br:
                 self.canmove['f'] = False
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.topright, w1, w2):
+            elif tr and not tl and not bl and not br:
                 self.canmove['r'] = False
                 self.canmove['b'] = False
-            elif self.in_box(self.rect.bottomright, w1, w2):
+            elif br and not tl and not tr and not bl:
                 self.canmove['r'] = False
                 self.canmove['f'] = False
+            print(self.canmove)
 
     def allow_movement(self):
         self.canmove['l'] = True

@@ -31,18 +31,18 @@ player_group.add(pl)
 level_list = {
     "hometown": Level(pygame.image.load("./assets/bgs/hometown.png"), [
         Entity([0,0], [430,75]),
-        Entity([0,75], [220, 645]),
-        Entity([220, 720-160], [1080, 720]),
-        Entity([1080-224, 75], [1080, 720-235]),
-        Entity([1080-434,0], [1080,75]),
+        Entity([0,0], [220, 720]),
+        Entity([0, 720-160], [1080, 720]),
+        Entity([1080-224, 0], [224, 720]),
+        Entity([1080-434,0], [434,75]),
     ],[
         Entity([430, 0], [220, 15], color=(0,255,0,50))
     ]),
-    "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
-        Entity([0,0], [100, 75])
-    ], [
-        Entity()
-    ])
+    # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
+    #     Entity([0,0], [100, 75])
+    # ], [
+    #     Entity()
+    # ])
 }
 
 level = 1
