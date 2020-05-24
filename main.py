@@ -30,9 +30,11 @@ player_group.add(pl)
 # level selection
 level_list = {
     "hometown": Level(pygame.image.load("./assets/bgs/hometown.png"), [
-        Entity([430,75], False),
-        Entity([220, 645], False),
-        #Entity([0, 720], [1080 ,320], False)
+        Entity([0,0], [430,75], False),
+        Entity([0,75], [220, 645], False),
+        Entity([220, 720-148], [1080, 720], False),
+        Entity([1080-220, 75], [1080, 720], False),
+        Entity([1080-430,0], [1080,75], False),
     ]),
     # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
     #     Entity([0,0], [100, 75], False)
@@ -58,11 +60,6 @@ def render():
     
     pygame.display.update()
 
-def isPtInBox(ptx,pty,x1,y1,x2,y2):
-    if ptx >= x1 and ptx <= x2 and pty >= y1 and pty <= y2:
-        return True
-    return False
-
 gameRunning = True
 
 # main loop
@@ -78,9 +75,9 @@ while gameRunning:
 
     hit = pygame.sprite.spritecollide(pl, bg.wall_group, False)
     if hit:
-        pl.vel = 0
+        pl.restrict_movement(bg.wall_group)
     else:
-        pl.vel = 2
+        pl.allow_movement()
 
     # update game state
     tick()
