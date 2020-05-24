@@ -2,6 +2,7 @@ import pygame
 from entity import Entity
 from player import Player
 from level import Level
+from exitzone import ExitZone
 
 # Initialize game settings
 pygame.init()
@@ -35,17 +36,24 @@ level_list = {
         Entity([0, 720-160], [1080, 720]),
         Entity([1080-224, 0], [224, 720]),
         Entity([1080-434,0], [434,75]),
+        #Entity([315,50], [30,170]),
     ],[
-        Entity([430, 0], [220, 15], color=(0,255,0,50))
+        ExitZone( Entity([430, 0], [220, 5], color=(0,255,0,50)), (0,670) , "route1", True), #exit to route 1
+        ExitZone( Entity([360, 170], [35, 5], color=(0,255,0,50)), (500,500) , "oakslab", False)
     ]),
     "route1": Level(pygame.image.load("./assets/bgs/route1.png"), [
         Entity([0,0], [100, 75])
     ], [
-        Entity([430, 0], [220, 15], color=(0,255,0,50))
+        ExitZone( Entity([430, 715], [220, 720], color=(0,255,0,50)), (0,-670) , "hometown", True) #exit to hometown
+    ]),
+    "oakslab": Level(pygame.image.load("./assets/bgs/oakslab.png"), [
+        Entity([0,0], [100, 75])
+    ], [
+        ExitZone( Entity([430, 715], [220, 720], color=(0,255,0,50)), (360,180) , "hometown", False) #exit to hometown
     ])
 }
 
-level = 1
+level = "hometown"
 bg = level_list["hometown"]
 
 def tick():
@@ -58,14 +66,21 @@ def tick():
     else:
         pl.allow_movement()
     
-    exiting = pygame.sprite.spritecollide(pl, bg.exit_group, False)
-    if exiting:
-        level += 1
+    # exiting = pygame.sprite.spritecollide(pl, bg.exit_group, False)
+    # if exiting:
+    #     level += 1
+    # for exitent in bg.exit_group:
+    #     exiting = pygame.sprite.collide_rect(pl, exitent)
+    #     if exiting:
+    #         print(bg.exit_dict[exitent])
+    for exitzone in bg.exit_zones:
+        exiting = pygame.sprite.collide_rect(pl, exitzone.exit_ent)
+        if exiting:
+            print(pl.pos)
+            level = exitzone.level_to
+            pl.change_pos_on_level(exitzone.spawn_change, exitzone.rel_spawn)
 
-    if level == 1:
-        bg = level_list["hometown"]
-    elif level == 2:
-        bg = level_list["route1"]
+    bg = level_list[level]
 
 def render():
 

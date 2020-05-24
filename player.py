@@ -34,6 +34,9 @@ class Player(Entity):
         self.stand_left = pygame.image.load("./assets/sprites/char/left_1.png")
         self.stand_for = pygame.image.load("./assets/sprites/char/for_1.png")
         self.stand_back = pygame.image.load("./assets/sprites/char/back_1.png")
+
+        self.last_dir = "f"
+        self.settled_sprite = self.stand_for
     
     def tick(self, screen_size, keydict):
         keys = pygame.key.get_pressed()
@@ -45,6 +48,7 @@ class Player(Entity):
             self.moving_direction["r"] = False
             self.moving_direction["f"] = False
             self.moving_direction["b"] = False
+            self.last_dir = "l"
         #right
         elif keys[keydict[1]] and self.canmove["r"] and self.pos[0] < screen_size[0] - self.char_w:
             self.pos[0] += self.vel
@@ -52,6 +56,7 @@ class Player(Entity):
             self.moving_direction["r"] = True
             self.moving_direction["f"] = False
             self.moving_direction["b"] = False
+            self.last_dir = "r"
         #back
         elif keys[keydict[2]] and self.canmove["b"] and self.pos[1] > 0:
             self.pos[1] -= self.vel
@@ -59,6 +64,7 @@ class Player(Entity):
             self.moving_direction["r"] = False
             self.moving_direction["f"] = False
             self.moving_direction["b"] = True
+            self.last_dir = "b"
         #for
         elif keys[keydict[3]] and self.canmove["f"] and self.pos[1] < screen_size[1] - self.char_h:
             self.pos[1] += self.vel
@@ -66,6 +72,7 @@ class Player(Entity):
             self.moving_direction["r"] = False
             self.moving_direction["f"] = True
             self.moving_direction["b"] = False
+            self.last_dir = "f"
         else:
             self.moving_direction["l"] = False
             self.moving_direction["r"] = False
@@ -93,11 +100,35 @@ class Player(Entity):
             screen.blit(self.walk_back[int(self.walkcount_y // self.WALK_PER_FRAME)], (self.pos[0], self.pos[1]))
             self.walkcount_y += 1
         else:
-            screen.blit(self.stand_for, (self.pos[0], self.pos[1]))
+            if self.last_dir == "l":
+                self.settled_sprite = self.stand_left
+            elif self.last_dir == "r":
+                self.settled_sprite = self.stand_right
+            elif self.last_dir == "b":
+                self.settled_sprite = self.stand_back
+            else:
+                self.settled_sprite = self.stand_for
+            screen.blit(self.settled_sprite, (self.pos[0], self.pos[1]))
         
         self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
         pygame.draw.rect(screen, (255,0,0), self.rect, 2)
 
+    def set_position(self, x,y):
+        self.pos[0] = x
+        self.pos[1] = y
+    
+    def get_position(self):
+        return self.pos
+    
+    def change_pos_on_level(self, spc, rel_spawn):
+        print(self.pos)
+        if rel_spawn:
+            self.pos[0] = self.pos[0] + spc[0]
+            self.pos[1] = self.pos[1] + spc[1]
+        else:
+            self.pos[0] = spc[0]
+            self.pos[1] = spc[1]
+        print(self.pos)
 
     def restrict_movement(self, wallgroup):
         self.allow_movement()
