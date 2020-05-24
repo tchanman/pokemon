@@ -96,15 +96,15 @@ class Player(Entity):
                 print('in here')
                 self.canmove['b'] = False
                 self.canmove['l'] = False
-            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomright,w1,w2):
-                self.canmove['b'] = False
-                self.canmove['r'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topleft,w1,w2):
-                self.canmove['f'] = False
-                self.canmove['l'] = False
-            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topright,w1,w2):
-                self.canmove['f'] = False
-                self.canmove['r'] = False
+            # elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomright,w1,w2):
+            #     self.canmove['b'] = False
+            #     self.canmove['r'] = False
+            # elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topleft,w1,w2):
+            #     self.canmove['f'] = False
+            #     self.canmove['l'] = False
+            # elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topright,w1,w2):
+            #     self.canmove['f'] = False
+            #     self.canmove['r'] = False
             
             elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and not self.in_box(self.rect.bottomleft,w1,w2) and not self.in_box(self.rect.bottomright,w1,w2):
                 print("over here")
