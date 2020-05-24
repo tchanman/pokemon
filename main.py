@@ -30,32 +30,46 @@ player_group.add(pl)
 # level selection
 level_list = {
     "hometown": Level(pygame.image.load("./assets/bgs/hometown.png"), [
-        Entity([0,0], [430,75], False),
-        Entity([0,75], [220, 645], False),
-        Entity([220, 720-160], [1080, 720], False),
-        Entity([1080-224, 75], [1080, 720-220], False),
-        Entity([1080-434,0], [1080,75], False),
+        Entity([0,0], [430,75]),
+        Entity([0,75], [220, 645]),
+        Entity([220, 720-160], [1080, 720]),
+        Entity([1080-224, 75], [1080, 720-235]),
+        Entity([1080-434,0], [1080,75]),
+    ],[
+        Entity([430, 0], [220, 15], color=(0,255,0,50))
     ]),
-    # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
-    #     Entity([0,0], [100, 75], False)
-    # ])
+    "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
+        Entity([0,0], [100, 75])
+    ], [
+        Entity()
+    ])
 }
 
 level = 1
 bg = level_list["hometown"]
 
 def tick():
-    global bg
+    global bg, level
+    pl.tick(SCREEN_SIZE, keydict)
+
+    colliding = pygame.sprite.spritecollide(pl, bg.wall_group, False)
+    if colliding:
+        pl.restrict_movement(bg.wall_group)
+    else:
+        pl.allow_movement()
+    
+    exiting = pygame.sprite.spritecollide(pl, bg.exit_group, False)
+    if exiting:
+        level += 1
+
     if level == 1:
         bg = level_list["hometown"]
     elif level == 2:
         bg = level_list["level1"]
-    
-    pl.tick(SCREEN_SIZE, keydict)
 
 def render():
 
-    bg.render(screen)
+    bg.render(screen, debug=True)
     pl.render(screen)
     
     pygame.display.update()
@@ -72,12 +86,6 @@ while gameRunning:
                 gameRunning = False
         if event.type == pygame.QUIT:
             gameRunning = False
-
-    hit = pygame.sprite.spritecollide(pl, bg.wall_group, False)
-    if hit:
-        pl.restrict_movement(bg.wall_group)
-    else:
-        pl.allow_movement()
 
     # update game state
     tick()

@@ -5,13 +5,13 @@ class Player(Entity):
     def __init__(self, pos):
         # character settings
         self.pos = pos
-        self.char_w = 34
+        self.char_w = 30
         self.char_h = 45
         
         super().__init__(pos, [self.char_w, self.char_h], False)
         
         self.vel = 5
-        self.rect_offput = [self.char_w / 2 - 2, self.char_h / 2 -2]
+        self.rect_offput = [self.char_w / 2, self.char_h / 2]
         self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
 
         # moving_direction = [for, back, left, right]
