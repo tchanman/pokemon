@@ -10,7 +10,7 @@ class Player(Entity):
         
         super().__init__(pos, [self.char_w, self.char_h], False)
         
-        self.vel = 5
+        self.vel = 4
         self.rect_offput = [self.char_w / 2, self.char_h / 2]
         self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
 

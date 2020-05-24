@@ -38,11 +38,11 @@ level_list = {
     ],[
         Entity([430, 0], [220, 15], color=(0,255,0,50))
     ]),
-    # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
-    #     Entity([0,0], [100, 75])
-    # ], [
-    #     Entity()
-    # ])
+    "route1": Level(pygame.image.load("./assets/bgs/route1.png"), [
+        Entity([0,0], [100, 75])
+    ], [
+        Entity([430, 0], [220, 15], color=(0,255,0,50))
+    ])
 }
 
 level = 1
@@ -65,7 +65,7 @@ def tick():
     if level == 1:
         bg = level_list["hometown"]
     elif level == 2:
-        bg = level_list["level1"]
+        bg = level_list["route1"]
 
 def render():
 
