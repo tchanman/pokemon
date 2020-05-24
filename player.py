@@ -10,9 +10,9 @@ class Player(Entity):
         
         super().__init__(pos, [self.char_w, self.char_h], False)
         
-        self.vel = 2
-        self.hitbox_offput = [self.char_w / 2 - 2, self.char_h / 2]
-        self.hitbox.center = [self.pos[0] + self.hitbox_offput[0], self.pos[1] + self.hitbox_offput[1]]
+        self.vel = 5
+        self.rect_offput = [self.char_w / 2 - 2, self.char_h / 2 -2]
+        self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
 
         # moving_direction = [for, back, left, right]
         self.moving_direction = {"f":False,"b":False,"l":False,"r":False}
@@ -42,18 +42,30 @@ class Player(Entity):
         if keys[keydict[0]] and self.canmove["l"] and self.pos[0] > 0:
             self.pos[0] -= self.vel
             self.moving_direction["l"] = True
+            self.moving_direction["r"] = False
+            self.moving_direction["f"] = False
+            self.moving_direction["b"] = False
         #right
         elif keys[keydict[1]] and self.canmove["r"] and self.pos[0] < screen_size[0] - self.char_w:
             self.pos[0] += self.vel
+            self.moving_direction["l"] = False
             self.moving_direction["r"] = True
+            self.moving_direction["f"] = False
+            self.moving_direction["b"] = False
         #back
         elif keys[keydict[2]] and self.canmove["b"] and self.pos[1] > 0:
             self.pos[1] -= self.vel
+            self.moving_direction["l"] = False
+            self.moving_direction["r"] = False
+            self.moving_direction["f"] = False
             self.moving_direction["b"] = True
         #for
         elif keys[keydict[3]] and self.canmove["f"] and self.pos[1] < screen_size[1] - self.char_h:
             self.pos[1] += self.vel
+            self.moving_direction["l"] = False
+            self.moving_direction["r"] = False
             self.moving_direction["f"] = True
+            self.moving_direction["b"] = False
         else:
             self.moving_direction["l"] = False
             self.moving_direction["r"] = False
@@ -83,8 +95,8 @@ class Player(Entity):
         else:
             screen.blit(self.stand_for, (self.pos[0], self.pos[1]))
         
-        self.hitbox.center = [self.pos[0] + self.hitbox_offput[0], self.pos[1] + self.hitbox_offput[1]]
-        pygame.draw.rect(screen, (255,0,0), self.hitbox, 2)
+        self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
+        pygame.draw.rect(screen, (255,0,0), self.rect, 2)
 
 
     def restrict_movement(self, wallgroup):
@@ -93,21 +105,19 @@ class Player(Entity):
             w1 = wall.rect.topleft
             w2 = wall.rect.bottomright
             if self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomleft,w1,w2):
-                print('in here')
                 self.canmove['b'] = False
                 self.canmove['l'] = False
-            # elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomright,w1,w2):
-            #     self.canmove['b'] = False
-            #     self.canmove['r'] = False
-            # elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topleft,w1,w2):
-            #     self.canmove['f'] = False
-            #     self.canmove['l'] = False
-            # elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topright,w1,w2):
-            #     self.canmove['f'] = False
-            #     self.canmove['r'] = False
+            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and self.in_box(self.rect.bottomright,w1,w2):
+                self.canmove['b'] = False
+                self.canmove['r'] = False
+            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topleft,w1,w2):
+                self.canmove['f'] = False
+                self.canmove['l'] = False
+            elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2) and self.in_box(self.rect.topright,w1,w2):
+                self.canmove['f'] = False
+                self.canmove['r'] = False
             
-            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2) and not self.in_box(self.rect.bottomleft,w1,w2) and not self.in_box(self.rect.bottomright,w1,w2):
-                print("over here")
+            elif self.in_box(self.rect.topleft, w1, w2) and self.in_box(self.rect.topright,w1,w2):
                 self.canmove['b'] = False
             elif self.in_box(self.rect.bottomleft, w1, w2) and self.in_box(self.rect.bottomright,w1,w2):
                 self.canmove['f'] = False

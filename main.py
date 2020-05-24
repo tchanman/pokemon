@@ -32,9 +32,9 @@ level_list = {
     "hometown": Level(pygame.image.load("./assets/bgs/hometown.png"), [
         Entity([0,0], [430,75], False),
         Entity([0,75], [220, 645], False),
-        Entity([220, 720-148], [1080, 720], False),
-        Entity([1080-220, 75], [1080, 720], False),
-        Entity([1080-430,0], [1080,75], False),
+        Entity([220, 720-160], [1080, 720], False),
+        Entity([1080-224, 75], [1080, 720-220], False),
+        Entity([1080-434,0], [1080,75], False),
     ]),
     # "level1": Level(pygame.image.load("./assets/bgs/level1.png"), [
     #     Entity([0,0], [100, 75], False)

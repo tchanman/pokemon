@@ -11,5 +11,3 @@ class Entity(pygame.sprite.Sprite):
         else:
             self.image.fill((255,0,0,50))
         self.rect = pygame.Rect(pos[0],pos[1],dimensions[0],dimensions[1])
-
-        self.hitbox = self.rect
