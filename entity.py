@@ -1,7 +1,7 @@
 import pygame
 
 class Entity(pygame.sprite.Sprite):
-    def __init__(self, pos, dimensions, isTransparent = False, color=(255,0,0,50)):
+    def __init__(self, pos, dimensions, color=(255,0,0,100)):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
 

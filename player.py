@@ -44,44 +44,29 @@ class Player(Entity):
         #left
         if keys[keydict[0]] and self.canmove["l"] and self.pos[0] > 0:
             self.pos[0] -= self.vel
-            self.moving_direction["l"] = True
-            self.moving_direction["r"] = False
-            self.moving_direction["f"] = False
-            self.moving_direction["b"] = False
+            self.set_moving_direction("l")
             self.last_dir = "l"
         #right
         elif keys[keydict[1]] and self.canmove["r"] and self.pos[0] < screen_size[0] - self.char_w:
             self.pos[0] += self.vel
-            self.moving_direction["l"] = False
-            self.moving_direction["r"] = True
-            self.moving_direction["f"] = False
-            self.moving_direction["b"] = False
+            self.set_moving_direction("r")
             self.last_dir = "r"
         #back
         elif keys[keydict[2]] and self.canmove["b"] and self.pos[1] > 0:
             self.pos[1] -= self.vel
-            self.moving_direction["l"] = False
-            self.moving_direction["r"] = False
-            self.moving_direction["f"] = False
-            self.moving_direction["b"] = True
+            self.set_moving_direction("b")
             self.last_dir = "b"
         #for
         elif keys[keydict[3]] and self.canmove["f"] and self.pos[1] < screen_size[1] - self.char_h:
             self.pos[1] += self.vel
-            self.moving_direction["l"] = False
-            self.moving_direction["r"] = False
-            self.moving_direction["f"] = True
-            self.moving_direction["b"] = False
+            self.set_moving_direction("f")
             self.last_dir = "f"
         else:
-            self.moving_direction["l"] = False
-            self.moving_direction["r"] = False
-            self.moving_direction["f"] = False
-            self.moving_direction["b"] = False
+            self.set_moving_direction()
             self.walkcount_x = 0
             self.walkcount_y = 0
 
-    def render(self, screen):
+    def render(self, screen, debug=False):
         if self.walkcount_x + 1 >= self.WALK_INTERVAL:
             self.walkcount_x = 0
         if self.walkcount_y + 1 >= self.WALK_INTERVAL:
@@ -111,7 +96,8 @@ class Player(Entity):
             screen.blit(self.settled_sprite, (self.pos[0], self.pos[1]))
         
         self.rect.center = [self.pos[0] + self.rect_offput[0], self.pos[1] + self.rect_offput[1]]
-        pygame.draw.rect(screen, (255,0,0), self.rect, 2)
+        if debug:
+            pygame.draw.rect(screen, (255,0,0), self.rect, 2)
 
     def set_position(self, x,y):
         self.pos[0] = x
@@ -140,19 +126,6 @@ class Player(Entity):
             bl = self.in_box(self.rect.bottomleft, w1, w2)
             br = self.in_box(self.rect.bottomright, w1, w2)
             
-            if tl and tr and bl and not br:
-                self.canmove['b'] = False
-                self.canmove['l'] = False
-            elif tl and tr and br and not bl:
-                self.canmove['b'] = False
-                self.canmove['r'] = False
-            elif bl and br and tl and not tr:
-                self.canmove['f'] = False
-                self.canmove['l'] = False
-            elif bl and br and tr and not tl:
-                self.canmove['f'] = False
-                self.canmove['r'] = False
-            
             if tl and tr and not bl and not br:
                 self.canmove['b'] = False
             elif bl and br and not tl and not tr:
@@ -162,19 +135,19 @@ class Player(Entity):
             elif tr and br and not tl and not bl:
                 self.canmove['r'] = False
             
-            elif tl and not tr and not bl and not br:
-                self.canmove['b'] = False
-                self.canmove['l'] = False
-            elif bl and not tl and not tr and not br:
-                self.canmove['f'] = False
-                self.canmove['l'] = False
-            elif tr and not tl and not bl and not br:
-                self.canmove['r'] = False
-                self.canmove['b'] = False
-            elif br and not tl and not tr and not bl:
-                self.canmove['r'] = False
-                self.canmove['f'] = False
-            print(self.canmove)
+            # elif tl and not tr and not bl and not br:
+            #     self.canmove['b'] = False
+            #     self.canmove['l'] = False
+            # elif bl and not tl and not tr and not br:
+            #     self.canmove['f'] = False
+            #     self.canmove['l'] = False
+            # elif tr and not tl and not bl and not br:
+            #     self.canmove['r'] = False
+            #     self.canmove['b'] = False
+            # elif br and not tl and not tr and not bl:
+            #     self.canmove['r'] = False
+            #     self.canmove['f'] = False
+            # print(self.canmove)
 
     def allow_movement(self):
         self.canmove['l'] = True
@@ -186,3 +159,10 @@ class Player(Entity):
         if ptcoords[0] >= boxtl[0] and ptcoords[0] <= boxbr[0] and ptcoords[1] >= boxtl[1] and ptcoords[1] <= boxbr[1]:
             return True
         return False
+
+    def set_moving_direction(self, dir=""):
+        for key in self.moving_direction:
+            if key == dir:
+                self.moving_direction[key] = True
+            else:
+                self.moving_direction[key] = False
