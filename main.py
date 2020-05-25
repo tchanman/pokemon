@@ -67,6 +67,13 @@ def render():
     
     pygame.display.update()
 
+def menu():
+    print("menu")
+
+def inventory():
+    print("inventory")
+
+
 gameRunning = True
 
 # main loop
@@ -75,12 +82,18 @@ while gameRunning:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                print("Quitting game.")
-                gameRunning = False
+                menu()
+            if event.key == pygame.K_i:
+                inventory()
         if event.type == pygame.QUIT:
             gameRunning = False
     if DEBUG:
-        print(pygame.mouse.get_pos())
+        # font =[]
+        # debug_fps = pygame.font.SysFont("Arial", 16).render(str(int(clock.get_fps())), 0, pygame.Color("white"))
+        # debug_mouse_pos = pygame.mouse.get_pos()
+
+        # screen.blit(debug_fps, (0,0))
+        # screen.blit(debug_mouse_pos, (0,50))
     # update game state
     tick()
     render()

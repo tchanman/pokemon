@@ -15,7 +15,7 @@ level_list = {
         
         Entity([315,90], [140,80]), # topleft house
         Entity([315,90], [40,120]),
-        Entity([395,90], [65,120]),
+        Entity([395,90], [60,120]),
 
         Entity([620,90], [140,80]), # topright house
         Entity([620,90], [40,120]),
@@ -25,7 +25,7 @@ level_list = {
         Entity([620,310], [40,120]),
         Entity([700,310], [60,120]),
 
-        Entity([300,310], [170,80]), # oakslab
+        Entity([300,310], [180,80]), # oakslab
         Entity([300,310], [70,120]),
         Entity([410,310], [70,120]),
     ],[
