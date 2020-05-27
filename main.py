@@ -1,10 +1,18 @@
+# Imported packages
 import pygame
+
+# Imported classes
 from entity import Entity
 from player import Player
 from level import Level
-from level_list import level_list
 from exitzone import ExitZone
 from pokezone import PokeZone
+from menu import Menu
+
+# Imported variables
+from level_list import level_list
+
+# ============= GAME =============
 
 # Initialize game settings
 pygame.init()
@@ -36,10 +44,21 @@ player_group.add(pl)
 level = "hometown"
 bg = level_list[level]
 
-def tick():
-    global bg, level, level_list
-    pl.tick(SCREEN_SIZE, keydict)
+save_data = {
+    "level": level,
+    "pos": pl.get_position,
+    "save_iteration": 0
+}
 
+menu = Menu(save_data)
+gameRunning = True
+
+
+def tick():
+    global bg, level, level_list, menu
+    if not menu.is_running:
+        pl.tick(SCREEN_SIZE, keydict)
+    
     wallcolliding = pygame.sprite.spritecollide(pl, bg.wall_group, False)
     if wallcolliding:
         pl.restrict_movement(bg.wall_group)
@@ -64,36 +83,42 @@ def render():
 
     bg.render(screen, DEBUG)
     pl.render(screen, DEBUG)
+    if menu.is_running:
+        menu.render(screen, DEBUG)
     
     pygame.display.update()
 
-def menu():
-    print("menu")
-
-def inventory():
-    print("inventory")
-
-
-gameRunning = True
+def open_menu():
+    global menu
+    
+    if menu.is_running:
+        print("Closing menu")
+        menu.is_running = False
+    else:
+        print("Opening menu")
+        menu.is_running = True
 
 # main loop
 while gameRunning:
     # check for events
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                menu()
-            if event.key == pygame.K_i:
-                inventory()
-        if event.type == pygame.QUIT:
+            if event.key == pygame.K_m: # open menu
+                open_menu()
+        if menu.is_running:
+            if event.type == pygame.KEYDOWN:
+                gameRunning = menu.handleMenu(event.key)
+        if event.type == pygame.QUIT: # quit game with x in corner
+            print("Quitting game.")
             gameRunning = False
-    if DEBUG:
-        # font =[]
-        # debug_fps = pygame.font.SysFont("Arial", 16).render(str(int(clock.get_fps())), 0, pygame.Color("white"))
-        # debug_mouse_pos = pygame.mouse.get_pos()
 
-        # screen.blit(debug_fps, (0,0))
+    if DEBUG:
+        debug_fps = pygame.font.SysFont("Arial", 16).render(str(int(clock.get_fps())), 0, pygame.Color("white"))
+        debug_mouse_pos = pygame.mouse.get_pos()
+
+        screen.blit(debug_fps, (0,0))
         # screen.blit(debug_mouse_pos, (0,50))
+
     # update game state
     tick()
     render()
