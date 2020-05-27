@@ -120,16 +120,24 @@ class Player(Entity):
     
     def get_position(self):
         return self.pos
+
+    def get_rect(self):
+        return self.rect
+
+    def get_last_dir(self):
+        return self.last_dir
+    def set_last_dir(self, direction):
+        self.last_dir = direction
     
     def change_pos_on_level(self, spc, rel_spawn):
-        print(self.pos)
+        # print(self.pos)
         if rel_spawn:
             self.pos[0] = self.pos[0] + spc[0]
             self.pos[1] = self.pos[1] + spc[1]
         else:
             self.pos[0] = spc[0]
             self.pos[1] = spc[1]
-        print(self.pos)
+        # print(self.pos)
 
     def restrict_movement(self, wallgroup):
         self.allow_movement()
@@ -175,7 +183,7 @@ class Player(Entity):
             elif br and not tl and not tr and not bl:
                 self.canmove['r'] = False
                 self.canmove['f'] = False
-            print(self.canmove)
+            # print(self.canmove)
 
     def allow_movement(self):
         self.canmove['l'] = True

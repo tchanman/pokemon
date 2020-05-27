@@ -33,6 +33,9 @@ FPS = 60
 
 # Debug mode on
 DEBUG = True
+DEBUG_FONT = pygame.font.SysFont("arial", 16)
+
+menu = Menu()
 
 # player
 pl = Player([SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2])
@@ -46,16 +49,13 @@ bg = level_list[level]
 
 save_data = {
     "level": level,
-    "pos": pl.get_position,
+    "pos": pl.get_position(),
     "save_iteration": 0
 }
 
-menu = Menu(save_data)
-gameRunning = True
-
 
 def tick():
-    global bg, level, level_list, menu
+    global bg, level, level_list, save_data
     if not menu.is_running:
         pl.tick(SCREEN_SIZE, keydict)
     
@@ -73,23 +73,38 @@ def tick():
     for exitzone in bg.exit_zones:
         exiting = pygame.sprite.collide_rect(pl, exitzone.exit_ent)
         if exiting:
-            # print(pl.pos)
             level = exitzone.level_to
             pl.change_pos_on_level(exitzone.spawn_change, exitzone.rel_spawn)
 
     bg = level_list[level]
 
 def render():
-
     bg.render(screen, DEBUG)
     pl.render(screen, DEBUG)
     if menu.is_running:
         menu.render(screen, DEBUG)
+
+    if DEBUG:
+        debugFPS = "FPS: " + str(int(clock.get_fps()))
+        debugFPS_surf = DEBUG_FONT.render(debugFPS, 1, (255,255,255))
+        
+        debug_mouse_pos = "Mouse Position: " + str(pygame.mouse.get_pos())
+        debugMousePos_surf = DEBUG_FONT.render(debug_mouse_pos, 1, (255,255,255))
+
+        debug_player_pos = "Player Position: (" + str(int(pl.get_position()[0])) + ", " + str(int(pl.get_position()[1])) + ")"
+        debugPlayerPos_surf = DEBUG_FONT.render(debug_player_pos, 1, (255,255,255))
+
+        debug_player_rect = "Player Rect: " + str(pl.get_rect())
+        debugPlayerRect_surf = DEBUG_FONT.render(debug_player_rect, 1, (255,255,255))
+
+        screen.blit(debugFPS_surf, (5,5))
+        screen.blit(debugMousePos_surf, (5,30))
+        screen.blit(debugPlayerPos_surf, (5,55))
+        screen.blit(debugPlayerRect_surf, (5,80))
     
     pygame.display.update()
 
 def open_menu():
-    global menu
     
     if menu.is_running:
         print("Closing menu")
@@ -98,26 +113,53 @@ def open_menu():
         print("Opening menu")
         menu.is_running = True
 
+def update_save_data():
+    print("Updating current data...")
+    global save_data, level
+
+    save_data["level"] = level
+    save_data["pos"] = pl.get_position()
+    save_data["last_dir"] = pl.get_last_dir()
+
+def check_save_data(load_data):
+    print("Checking save data...")
+    global save_data, level
+
+    try:
+        if save_data["save_iteration"] != load_data["save_iteration"]:
+            level = load_data["level"]
+            pos = load_data["pos"]
+            last_dir = load_data["last_dir"]
+
+            pl.set_position(pos[0], pos[1])
+            pl.set_last_dir(last_dir)
+
+            update_save_data()
+            print("Game save loaded.")
+    except TypeError as error:
+        print("No save found.")
+
+
+gameRunning = True
+
 # main loop
 while gameRunning:
+
     # check for events
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYUP:
             if event.key == pygame.K_m: # open menu
                 open_menu()
         if menu.is_running:
-            if event.type == pygame.KEYDOWN:
-                gameRunning = menu.handleMenu(event.key)
+            if event.type == pygame.KEYUP:
+                update_save_data()
+                menuResult = menu.handleMenu(event.key, save_data)
+                gameRunning = menuResult["notquitting"]
+                if menuResult["loading"]:
+                    check_save_data(menuResult["load_data"])
         if event.type == pygame.QUIT: # quit game with x in corner
             print("Quitting game.")
             gameRunning = False
-
-    if DEBUG:
-        debug_fps = pygame.font.SysFont("Arial", 16).render(str(int(clock.get_fps())), 0, pygame.Color("white"))
-        debug_mouse_pos = pygame.mouse.get_pos()
-
-        screen.blit(debug_fps, (0,0))
-        # screen.blit(debug_mouse_pos, (0,50))
 
     # update game state
     tick()
