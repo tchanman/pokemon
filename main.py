@@ -111,6 +111,7 @@ def open_menu():
         menu.is_running = False
     else:
         print("Opening menu")
+        update_save_data()
         menu.is_running = True
 
 def update_save_data():
@@ -152,7 +153,6 @@ while gameRunning:
                 open_menu()
         if menu.is_running:
             if event.type == pygame.KEYUP:
-                update_save_data()
                 menuResult = menu.handleMenu(event.key, save_data)
                 gameRunning = menuResult["notquitting"]
                 if menuResult["loading"]:

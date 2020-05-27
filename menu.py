@@ -15,7 +15,7 @@ class Menu(object):
 
         self.arrow_pos = [845,self.selected_option]
         screen.blit(self.arrow, self.arrow_pos)
-
+        
     def handleMenu(self, key, save_data):
         menuResult = {
             "notquitting": True,
