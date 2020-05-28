@@ -1,4 +1,5 @@
 import pygame, easygui, pickle, sys, os
+from datetime import datetime
 
 class Menu(object):
     def __init__(self, save_data=None):
@@ -62,8 +63,10 @@ class Menu(object):
         self.save_data["last_dir"] = save_data["last_dir"]
         self.save_data["save_iteration"] += 1
 
+        date_string = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
         homedir = os.path.dirname(__file__)
-        savepath = 'saves\pokesave' + str(self.save_data["save_iteration"]) + '.dat'
+        savepath = 'saves\pokesave' + date_string + '.dat'
         savefile = os.path.join(homedir, savepath)
 
         pickle.dump(self.save_data, open(savefile, "wb"))
@@ -72,7 +75,7 @@ class Menu(object):
         print("Loading save...")
 
         homedir = os.path.dirname(__file__)
-        savedir = os.path.join(homedir, 'saves')
+        savedir = os.path.join(homedir, 'saves/')
 
         path = easygui.fileopenbox(default=savedir, filetypes="*.dat")
 

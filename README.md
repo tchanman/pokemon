@@ -2,8 +2,8 @@
 It's pokemon (sorta) made with python
 
 # TODO
- - make background for hometown
- - make background for route 1
+ - make backgrounds for all levels
+ - make start screen
 
 
 
