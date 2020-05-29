@@ -2,15 +2,15 @@
 import pygame
 
 # Imported classes
-from entity import Entity
-from player import Player
-from level import Level
-from exitzone import ExitZone
-from pokezone import PokeZone
-from menu import Menu
+from game.entity import Entity
+from game.player import Player
+from game.level import Level
+from game.exitzone import ExitZone
+from game.pokezone import PokeZone
+from game.menu import Menu
 
 # Imported variables
-from level_list import level_list
+from game.level_list import level_list
 
 # ============= GAME =============
 

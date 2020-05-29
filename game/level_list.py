@@ -1,7 +1,7 @@
 import pygame
-from level import Level
-from entity import Entity
-from exitzone import ExitZone
+from game.level import Level
+from game.entity import Entity
+from game.exitzone import ExitZone
 
 # level selection
 # TREE WIDTH = 65 + 5, 75 + 5

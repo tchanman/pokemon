@@ -65,7 +65,8 @@ class Menu(object):
 
         date_string = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-        homedir = os.path.dirname(__file__)
+        gamedir = os.path.dirname(__file__)
+        homedir = os.path.dirname(gamedir)
         savepath = 'saves\pokesave' + date_string + '.dat'
         savefile = os.path.join(homedir, savepath)
 
@@ -74,7 +75,8 @@ class Menu(object):
     def load(self):
         print("Loading save...")
 
-        homedir = os.path.dirname(__file__)
+        gamedir = os.path.dirname(__file__)
+        homedir = os.path.dirname(gamedir)
         savedir = os.path.join(homedir, 'saves/')
 
         path = easygui.fileopenbox(default=savedir, filetypes="*.dat")

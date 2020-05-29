@@ -1,5 +1,5 @@
 import pygame
-from entity import Entity
+from game.entity import Entity
 
 class Player(Entity):
     def __init__(self, pos):
