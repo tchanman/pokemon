@@ -16,6 +16,7 @@ from game.level_list import level_list
 
 # Initialize game settings
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_caption("Pokemon")
 
 logo = pygame.image.load("./assets/pokeball.png")
@@ -59,11 +60,10 @@ def tick():
     if not menu.is_running:
         pl.tick(SCREEN_SIZE, keydict, bg.wall_group, bg.pokezone_group)
 
-    for exitzone in bg.exit_zones:
-        exiting = pygame.sprite.collide_rect(pl, exitzone.exit_ent)
-        if exiting:
-            level = exitzone.level_to
-            pl.change_pos_on_level(exitzone.spawn_change, exitzone.rel_spawn)
+    exit_hit_list = pygame.sprite.spritecollide(pl, bg.exit_group, False)
+    for exitzone in exit_hit_list:
+        level = exitzone.level_to
+        pl.change_level(exitzone)
 
     bg = level_list[level]
 
@@ -90,7 +90,7 @@ def render():
     pygame.display.update()
 
 def open_menu():
-    
+    pygame.mixer.Sound("./assets/sounds/SFX_START_MENU.wav").play()
     if menu.is_running:
         print("Closing menu")
         menu.is_running = False
@@ -133,11 +133,11 @@ while gameRunning:
 
     # check for events
     for event in pygame.event.get():
-        if event.type == pygame.KEYUP:
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_m: # open menu
                 open_menu()
         if menu.is_running:
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYDOWN:
                 menuResult = menu.handleMenu(event.key, save_data)
                 gameRunning = menuResult["notquitting"]
                 if menuResult["loading"]:

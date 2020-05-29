@@ -1,8 +1,9 @@
 import pygame
 
 class Level(object):
-    def __init__(self, bg, walls, exit_zones, poke_zones):
+    def __init__(self, bg, music, walls, exit_zones, poke_zones):
         self.bg = bg
+        self.music = music
         self.walls = walls
         self.exit_zones = exit_zones
         self.poke_zones = poke_zones
@@ -15,7 +16,7 @@ class Level(object):
             self.wall_group.add(wall)
         
         for exitzone in self.exit_zones:
-            self.exit_group.add(exitzone.exit_ent)
+            self.exit_group.add(exitzone)
         
         for pokezone in self.poke_zones:
             self.pokezone_group.add(pokezone)

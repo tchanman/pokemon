@@ -1,6 +1,8 @@
 import pygame
 from game.entity import Entity
 
+pygame.init()
+
 class Player(Entity):
     def __init__(self, pos):
         # character settings
@@ -120,15 +122,23 @@ class Player(Entity):
     def get_last_dir(self):
         return self.last_dir
     
-    def change_pos_on_level(self, spc, rel_spawn):
-        # print(self.pos)
-        if rel_spawn:
-            self.rect.x = self.rect.x + spc[0]
-            self.rect.y = self.rect.y + spc[1]
+    def change_level(self, exitzone):
+        spc = exitzone.spawn_change
+        rel_spawn = exitzone.rel_spawn
+        isInside = exitzone.isInside
+
+        if isInside:
+            exit_noise = pygame.mixer.Sound("./assets/sounds/SFX_GO_OUTSIDE.wav")
         else:
-            self.rect.x = spc[0]
-            self.rect.y = spc[1]
-        # print(self.pos)
+            exit_noise = pygame.mixer.Sound("./assets/sounds/SFX_GO_INSIDE.wav")
+        exit_noise.play()
+
+        if rel_spawn:
+            x,y = self.get_position()
+            self.set_position(x + spc[0], y + spc[1])
+        else:
+            self.set_position(spc[0], spc[1])
+
 
     def check_collision(self, wall_group, zone_group, direction):
         wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
@@ -147,4 +157,4 @@ class Player(Entity):
                     self.rect.top = wall.rect.bottom
 
         for zone in zone_hit_list:
-            pass
+            print("Stepping on grass!")

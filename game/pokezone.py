@@ -1,8 +1,10 @@
 import pygame
+from game.entity import Entity
 
-class PokeZone(object):
-    def __init__(self, zone_ent, pokedict, battle_type, spawn_rate=0):
-        self.zone_ent = zone_ent
+class PokeZone(Entity):
+    def __init__(self, pos, dimensions, pokedict, battle_type):
+        self.color = (255, 0, 0, 100)
+        super().__init__(pos, dimensions, self.color)
+
         self.pokedict = pokedict
         self.battle_type = battle_type
-        self.spawn_rate = spawn_rate

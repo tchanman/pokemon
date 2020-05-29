@@ -1,6 +1,8 @@
 import pygame, easygui, pickle, sys, os
 from datetime import datetime
 
+pygame.init()
+
 class Menu(object):
     def __init__(self, save_data=None):
         self.img = pygame.image.load("./assets/menu/menu.png")
@@ -28,6 +30,7 @@ class Menu(object):
         elif key == pygame.K_DOWN:
             self.selected_option += 50
         elif key == pygame.K_RETURN:
+            pygame.mixer.Sound("./assets/sounds/SFX_PRESS_AB.wav").play()
             if self.selected_option == 60:
                 self.pokedex()
             elif self.selected_option == 110:
