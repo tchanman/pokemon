@@ -1,5 +1,10 @@
-__pycache__/
-*.py[cod]
-
+.#*
+*.swp
 .DS_Store
-.vscode/
+.dir-locals.el
+.dir-locals-2.el
+
+*.py[cod]
+__pycache__/
+
+pokesave*.dat
