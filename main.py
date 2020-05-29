@@ -38,8 +38,8 @@ DEBUG_FONT = pygame.font.SysFont("arial", 16)
 menu = Menu()
 
 # player
-pl = Player([SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2])
-keydict = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
+pl = Player((540, 500))
+keydict = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_LSHIFT]
 
 player_group = pygame.sprite.Group()
 player_group.add(pl)
@@ -57,18 +57,7 @@ save_data = {
 def tick():
     global bg, level, level_list, save_data
     if not menu.is_running:
-        pl.tick(SCREEN_SIZE, keydict)
-    
-    wallcolliding = pygame.sprite.spritecollide(pl, bg.wall_group, False)
-    if wallcolliding:
-        pl.restrict_movement(bg.wall_group)
-    else:
-        pl.allow_movement()
-    
-    for pokezone in bg.pokezone_group:
-        grasscolliding = pygame.sprite.collid_rect(pl, pokezone.area_ent)
-        if grasscolliding:
-            level = pokezone.battle_type
+        pl.tick(SCREEN_SIZE, keydict, bg.wall_group, bg.pokezone_group)
 
     for exitzone in bg.exit_zones:
         exiting = pygame.sprite.collide_rect(pl, exitzone.exit_ent)
@@ -94,13 +83,9 @@ def render():
         debug_player_pos = "Player Position: (" + str(int(pl.get_position()[0])) + ", " + str(int(pl.get_position()[1])) + ")"
         debugPlayerPos_surf = DEBUG_FONT.render(debug_player_pos, 1, (255,255,255))
 
-        debug_player_rect = "Player Rect: " + str(pl.get_rect())
-        debugPlayerRect_surf = DEBUG_FONT.render(debug_player_rect, 1, (255,255,255))
-
         screen.blit(debugFPS_surf, (5,5))
         screen.blit(debugMousePos_surf, (5,30))
         screen.blit(debugPlayerPos_surf, (5,55))
-        screen.blit(debugPlayerRect_surf, (5,80))
     
     pygame.display.update()
 
