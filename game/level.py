@@ -1,9 +1,9 @@
 import pygame
 
 class Level(object):
-    def __init__(self, bg, music, walls, exit_zones, poke_zones):
+    def __init__(self, bg, music_path, walls, exit_zones, poke_zones):
         self.bg = bg
-        self.music = music
+        self.music_path = music_path
         self.walls = walls
         self.exit_zones = exit_zones
         self.poke_zones = poke_zones

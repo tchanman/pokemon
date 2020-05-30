@@ -128,9 +128,9 @@ class Player(Entity):
         isInside = exitzone.isInside
 
         if isInside:
-            exit_noise = pygame.mixer.Sound("./assets/sounds/SFX_GO_OUTSIDE.wav")
+            exit_noise = pygame.mixer.Sound("./assets/sounds/sfx/SFX_GO_OUTSIDE.wav")
         else:
-            exit_noise = pygame.mixer.Sound("./assets/sounds/SFX_GO_INSIDE.wav")
+            exit_noise = pygame.mixer.Sound("./assets/sounds/sfx/SFX_GO_INSIDE.wav")
         exit_noise.play()
 
         if rel_spawn:

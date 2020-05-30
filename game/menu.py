@@ -30,7 +30,7 @@ class Menu(object):
         elif key == pygame.K_DOWN:
             self.selected_option += 50
         elif key == pygame.K_RETURN:
-            pygame.mixer.Sound("./assets/sounds/SFX_PRESS_AB.wav").play()
+            pygame.mixer.Sound("./assets/sounds/sfx/SFX_PRESS_AB.wav").play()
             if self.selected_option == 60:
                 self.pokedex()
             elif self.selected_option == 110:
@@ -54,7 +54,6 @@ class Menu(object):
         return menuResult
 
     def save(self, save_data):
-        print("Saving game state.")
         
         if self.save_data == None:
             self.save_data = {
