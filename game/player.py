@@ -37,14 +37,14 @@ class Player(Entity):
 
         self.hasRunningShoes = True
     
-    def tick(self, screen_size, keydict, wall_group, zone_group):
+    def tick(self, screen_size, keydict, bg):
         keys = pygame.key.get_pressed()
         
         self.rect.x += self.dx
-        self.check_collision(wall_group, zone_group, "x")
+        self.check_collision(bg, "x")
         
         self.rect.y += self.dy
-        self.check_collision(wall_group, zone_group, "y")
+        self.check_collision(bg, "y")
 
         #left
         if keys[keydict[0]] and self.rect.x > 0:
@@ -108,13 +108,6 @@ class Player(Entity):
 
         if debug:
             pygame.draw.rect(screen, (255,0,0), self.rect, 2)
-    
-    def set_position(self, x,y):
-        self.rect.x = x
-        self.rect.y = y
-
-    def get_position(self):
-        return (self.rect.x, self.rect.y)
 
     def set_last_dir(self, direction):
         self.last_dir = direction
@@ -134,15 +127,14 @@ class Player(Entity):
         exit_noise.play()
 
         if rel_spawn:
-            x,y = self.get_position()
-            self.set_position(x + spc[0], y + spc[1])
+            x,y = self.get_rect()
+            self.set_rect(x + spc[0], y + spc[1])
         else:
-            self.set_position(spc[0], spc[1])
+            self.set_rect(spc[0], spc[1])
 
 
-    def check_collision(self, wall_group, zone_group, direction):
-        wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
-        zone_hit_list = pygame.sprite.spritecollide(self, zone_group, False)
+    def check_collision(self, bg, direction):
+        wall_hit_list = pygame.sprite.spritecollide(self, bg.wall_group, False)
         
         for wall in wall_hit_list:
             if direction == "x":
@@ -156,5 +148,7 @@ class Player(Entity):
                 else:
                     self.rect.top = wall.rect.bottom
 
-        for zone in zone_hit_list:
-            print("Stepping on grass!")
+        if bg.poke_zone.hasPokemon:
+            pokezone_hit_list = pygame.sprite.spritecollide(self, bg.pokezone_group, False)
+            for ent in pokezone_hit_list:
+                bg.poke_zone.handleGrass()

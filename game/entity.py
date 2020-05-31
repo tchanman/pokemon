@@ -9,3 +9,10 @@ class Entity(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+
+    def set_rect(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
+    def get_rect(self):
+        return self.rect.x, self.rect.y

@@ -1,10 +1,11 @@
 import pygame
-from game.entity import Entity
 
-class PokeZone(Entity):
-    def __init__(self, pos, dimensions, pokedict, battle_type):
-        self.color = (255, 0, 0, 100)
-        super().__init__(pos, dimensions, self.color)
-
-        self.pokedict = pokedict
+class PokeZone(object):
+    def __init__(self, hasPokemon=False, battle_type=None, pokedict=None, ent_list=None):
+        self.hasPokemon = hasPokemon
         self.battle_type = battle_type
+        self.pokedict = pokedict
+        self.ent_list = ent_list
+
+    def handleGrass(self):
+        print("handling grass")
