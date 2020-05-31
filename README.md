@@ -1,13 +1,11 @@
 # Pokemon
 It's pokemon (sorta) made with python
 
-# TODO
- - make background for hometown
- - make background for route 1
+# To Start
+ 1. Clone github repository to desktop.
+ 
+ 2. Pip install project dependencies with
+ > pip install -r requirements.txt
 
-
-
-if hit:
-    for box in walls:
-        if inbox(tl,box) and inbox(tr,box):
-            canmove_b is false
+ 3. Navigate to the "pokemon" repository and run program with
+ > python main.py

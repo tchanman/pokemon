@@ -1,2 +1,10 @@
-__pycache__/
+.#*
+*.swp
+.DS_Store
+.dir-locals.el
+.dir-locals-2.el
+
 *.py[cod]
+__pycache__/
+
+*.dat

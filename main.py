@@ -2,15 +2,15 @@
 import pygame
 
 # Imported classes
-from entity import Entity
-from player import Player
-from level import Level
-from exitzone import ExitZone
-from pokezone import PokeZone
-from menu import Menu
+from game.entity import Entity
+from game.player import Player
+from game.level import Level
+from game.exitzone import ExitZone
+from game.pokezone import PokeZone
+from game.menu import Menu
 
 # Imported variables
-from level_list import level_list
+from game.level_list import level_list
 
 # ============= GAME =============
 
@@ -38,14 +38,15 @@ DEBUG_FONT = pygame.font.SysFont("arial", 16)
 menu = Menu()
 
 # player
-pl = Player([SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2])
-keydict = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
+pl = Player((540, 500))
+keydict = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN, pygame.K_LSHIFT]
 
 player_group = pygame.sprite.Group()
 player_group.add(pl)
 
 level = "hometown"
 bg = level_list[level]
+music = bg.music_path
 
 save_data = {
     "level": level,
@@ -55,28 +56,22 @@ save_data = {
 
 
 def tick():
-    global bg, level, level_list, save_data
+    global bg, level, level_list, music
     if not menu.is_running:
-        pl.tick(SCREEN_SIZE, keydict)
-    
-    wallcolliding = pygame.sprite.spritecollide(pl, bg.wall_group, False)
-    if wallcolliding:
-        pl.restrict_movement(bg.wall_group)
-    else:
-        pl.allow_movement()
-    
-    for pokezone in bg.pokezone_group:
-        grasscolliding = pygame.sprite.collid_rect(pl, pokezone.area_ent)
-        if grasscolliding:
-            level = pokezone.battle_type
+        pl.tick(SCREEN_SIZE, keydict, bg.wall_group, bg.pokezone_group)
 
-    for exitzone in bg.exit_zones:
-        exiting = pygame.sprite.collide_rect(pl, exitzone.exit_ent)
-        if exiting:
-            level = exitzone.level_to
-            pl.change_pos_on_level(exitzone.spawn_change, exitzone.rel_spawn)
-
-    bg = level_list[level]
+    exit_hit_list = pygame.sprite.spritecollide(pl, bg.exit_group, False)
+    for exitzone in exit_hit_list:
+        level = exitzone.level_to
+        bg = level_list[level]
+        pl.change_level(exitzone)
+        print("Level: " + level)
+        print("doMusicChange" + str(exitzone.doMusicChange))
+        if exitzone.doMusicChange:
+            pygame.mixer.music.stop()
+            music = bg.music_path
+            pygame.mixer.music.load(music)
+            pygame.mixer.music.play(-1)
 
 def render():
     bg.render(screen, DEBUG)
@@ -94,18 +89,14 @@ def render():
         debug_player_pos = "Player Position: (" + str(int(pl.get_position()[0])) + ", " + str(int(pl.get_position()[1])) + ")"
         debugPlayerPos_surf = DEBUG_FONT.render(debug_player_pos, 1, (255,255,255))
 
-        debug_player_rect = "Player Rect: " + str(pl.get_rect())
-        debugPlayerRect_surf = DEBUG_FONT.render(debug_player_rect, 1, (255,255,255))
-
         screen.blit(debugFPS_surf, (5,5))
         screen.blit(debugMousePos_surf, (5,30))
         screen.blit(debugPlayerPos_surf, (5,55))
-        screen.blit(debugPlayerRect_surf, (5,80))
     
     pygame.display.update()
 
 def open_menu():
-    
+    pygame.mixer.Sound("./assets/sounds//sfx/SFX_START_MENU.wav").play()
     if menu.is_running:
         print("Closing menu")
         menu.is_running = False
@@ -141,29 +132,36 @@ def check_save_data(load_data):
         print("No save found.")
 
 
-gameRunning = True
+def main():
+    gameRunning = True
+    
+    pygame.mixer.music.load(music)
+    pygame.mixer.music.play(-1)
+    
+    # main loop
+    while gameRunning:
 
-# main loop
-while gameRunning:
+        # check for events
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m: # open menu
+                    open_menu()
+            if menu.is_running:
+                if event.type == pygame.KEYDOWN:
+                    menuResult = menu.handleMenu(event.key, save_data)
+                    gameRunning = menuResult["notquitting"]
+                    if menuResult["loading"]:
+                        check_save_data(menuResult["load_data"])
+            if event.type == pygame.QUIT: # quit game with x in corner
+                print("Quitting game.")
+                gameRunning = False
 
-    # check for events
-    for event in pygame.event.get():
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_m: # open menu
-                open_menu()
-        if menu.is_running:
-            if event.type == pygame.KEYUP:
-                menuResult = menu.handleMenu(event.key, save_data)
-                gameRunning = menuResult["notquitting"]
-                if menuResult["loading"]:
-                    check_save_data(menuResult["load_data"])
-        if event.type == pygame.QUIT: # quit game with x in corner
-            print("Quitting game.")
-            gameRunning = False
+        # update game state
+        tick()
+        render()
+        clock.tick(FPS)
 
-    # update game state
-    tick()
-    render()
-    clock.tick(FPS)
+    pygame.quit()
 
-pygame.quit()
+if __name__ == "__main__":
+    main()
